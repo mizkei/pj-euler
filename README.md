@@ -1,3 +1,7 @@
 # project euler のプログラム
 
-プログラムの学習用にproject eulerの問題を解いていく
+学習用にproject eulerの問題を解いていく
+
+#使用言語一覧
+
+* Haskell
