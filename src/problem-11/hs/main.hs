@@ -12,12 +12,11 @@ maxAdjacentNum n ls@(_:xs)
 maxAdjacent4 :: [[Int]] -> Int
 maxAdjacent4 = maximum . map (maxAdjacentNum 4)
 
-{- 配列をずらして、上三角や下三角行列を生成し、斜めを表現する -}
-{- なんだか異様に長い -}
-{- もっと綺麗な実装を -}
-triangularMatrix :: (Int -> [a] -> [a]) -> (Int -> Int) -> Int -> [[a]] -> [[a]]
-triangularMatrix _ _ _ [] = []
-triangularMatrix fm f n (xs:xss) = fm n xs : triangularMatrix fm f (f n) xss
+rhombus :: Int -> Int -> [[Int]] -> [[Int]]
+rhombus _ _ [] = [[]]
+rhombus n ln (x:xs)
+    | n < 0 || ln < n = [[]]
+    | otherwise = (replicate n 0 ++ x ++ replicate (ln - n) 0) : rhombus (n + 1) ln xs
 
 main = do
     contents <- readFile "grid.txt"
@@ -26,8 +25,6 @@ main = do
         len = length $ head nLists
     let a1 = maxAdjacent4 nLists
         a2 = maxAdjacent4 $ transpose nLists
-        a3 = maxAdjacent4 $ transpose $ map reverse $ triangularMatrix take (+ 1) 0 nLists
-        a4 = maxAdjacent4 $ transpose $ map reverse $ triangularMatrix take (subtract 1) (len - 1) nLists
-        a5 = maxAdjacent4 $ transpose $ triangularMatrix drop (+ 1) 0 nLists
-        a6 = maxAdjacent4 $ transpose $ triangularMatrix drop (subtract 1) (len - 1) nLists
-    print $ maximum [a1, a2, a3, a4, a5, a6]
+        a3 = maxAdjacent4 $ transpose $ rhombus 0 (len - 1) nLists
+        a4 = maxAdjacent4 $ transpose $ rhombus 0 (len - 1) $ reverse nLists
+    print $ maximum [a1, a2, a3, a4]
